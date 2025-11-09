@@ -53,6 +53,7 @@ suspend fun main() {
         port = 8080,
         path = "/a2a",
         wait = true,
+        agentCard = agentCard,
     )
 }
 
