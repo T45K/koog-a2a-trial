@@ -2,6 +2,6 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "koog-trial"
+rootProject.name = "koog-a2a-trial"
 
-include("server", "client", "agent")
+include("server", "client")

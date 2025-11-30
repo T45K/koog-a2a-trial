@@ -15,8 +15,6 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 suspend fun main() {
     val geminiApiKey = System.getenv("GEMINI_API_KEY")
@@ -36,9 +34,7 @@ suspend fun main() {
 
     val result = aiAgent.run(
         """
-            I want to know the weather, high temperature, and low temperature in Osaka.
-            Today is ${LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}.
-            What will tomorrow's weather, high temperature, and low temperature be like in Osaka?
+            Kotlinのバックエンドエンジニアを募集している企業の求人のURLを教えて。年収700万以上で。100件くらい検索して、良さそうなものを上位10件で選んで
         """.trimIndent()
     )
     println(result)
@@ -67,6 +63,36 @@ class GoogleSearchTool(
             parameter("q", args.query)
             parameter("num", args.num)
         }
-        return response.bodyAsText()
+        return response.bodyAsText().also { println(it) }
     }
 }
+
+
+/*
+A2Aプロトコルを紹介する簡単な題材を作っています。
+以下の要求を満たすように、プログラムを修正してください
+修正対象はServerMainとClientMain
+
+## ServerMain
+- ServerMainは2つのSkillを持つ
+  - 1. Greetings: 挨拶が入力されたとき、適切な挨拶を返すだけのSkill
+  - 2. 天気検索: 天気を検索して返すSkill
+- Serverへの入力が挨拶だった場合、Greetings Skillを実行する
+- Greetings Skillでは、AiAgentにそのまま入力を渡して、結果を返す。
+- これはeventProcessor.sendMessageをそのまま作る
+- AiAgentの実装はAgentMainを参照する
+- Serverへの入力が天気に関する話題なら、天気検索Skillを実行する
+- これはeventProcessor.sendTaskEventで処理する
+- 天気検索では、日付と地域名がない場合、ユーザーにそれを含めるように返答する
+- 含まれていた場合、検索前に日付と地域名で検索します、という返答を返してから、検索する
+- 検索にはGoogleSearchToolを用いる
+- https://weathernews.jpを使うように指定する
+- Serverへの入力がいずれかに当てはまらない場合、どちらかを指定するように返答する
+
+## ClientMain
+以下のリクエストを送る
+- 最初に挨拶をドイツ語で送る。レスポンスを確認し、Greetings Skillが利用され、ドイツ語であいさつが返ってきたことを確認する
+- 「今日の天気は何ですか」と送る。天気検索Skillが利用されて、地域を指定するように言われることを確認する
+- 「今日の大阪の天気は何ですか」と送る。天気検索Skillが利用されて、天気が返ってきたことを確認する
+- 今日の晩御飯の献立について訊く。あいさつか天気について訊くように言われたことを確認する
+ */
