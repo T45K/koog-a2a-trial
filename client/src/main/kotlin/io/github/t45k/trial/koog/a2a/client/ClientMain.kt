@@ -5,6 +5,8 @@ import ai.koog.a2a.client.UrlAgentCardResolver
 import ai.koog.a2a.model.Message
 import ai.koog.a2a.model.MessageSendParams
 import ai.koog.a2a.model.Role
+import ai.koog.a2a.model.Task
+import ai.koog.a2a.model.TaskArtifactUpdateEvent
 import ai.koog.a2a.model.TaskStatusUpdateEvent
 import ai.koog.a2a.model.TextPart
 import ai.koog.a2a.transport.Request
@@ -79,6 +81,10 @@ private suspend fun sendMessageAndPrintResponse(client: A2AClient, text: String)
                 println("📥 レスポンス (Message): $responseText")
             }
 
+            is Task -> {
+                println("📥 レスポンス (Task - ${event.status.state})")
+            }
+
             is TaskStatusUpdateEvent -> {
                 event.status.message?.parts
                     ?.filterIsInstance<TextPart>()
@@ -92,9 +98,7 @@ private suspend fun sendMessageAndPrintResponse(client: A2AClient, text: String)
                 }
             }
 
-            else -> {
-                println("📥 その他のイベント: $event")
-            }
+            is TaskArtifactUpdateEvent -> TODO("This trial doesn't handle TaskArtifactUpdateEvent yet.")
         }
     }
     println()
