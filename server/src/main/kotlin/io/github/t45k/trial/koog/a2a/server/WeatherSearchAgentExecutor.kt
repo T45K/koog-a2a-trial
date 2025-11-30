@@ -93,7 +93,7 @@ class WeatherSearchAgentExecutor(private val googleSearchToolAgentFactory: AIAge
             Date: ${request.date}
             Location: ${request.location}
             
-            Based on the search results, please provide a concise summary of the weather information.
+            Based on the search results, please provide a concise summary of the weather information in the same language of Date and Location.
         """.trimIndent()
 
         val weatherResult = googleSearchToolAgent.run(weatherPrompt)
@@ -107,7 +107,7 @@ class WeatherSearchAgentExecutor(private val googleSearchToolAgentFactory: AIAge
                     message = Message(
                         messageId = UUID.randomUUID().toString(),
                         role = Role.Agent,
-                        parts = listOf(TextPart("$weatherResult")),
+                        parts = listOf(TextPart(weatherResult)),
                         contextId = context.contextId,
                         taskId = context.taskId
                     )
