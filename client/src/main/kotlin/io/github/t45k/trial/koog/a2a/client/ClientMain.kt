@@ -98,7 +98,17 @@ private suspend fun sendMessageAndPrintResponse(client: A2AClient, text: String)
                 }
             }
 
-            is TaskArtifactUpdateEvent -> TODO("This trial doesn't handle TaskArtifactUpdateEvent yet.")
+            is TaskArtifactUpdateEvent -> {
+                val artifactText = event.artifact.parts
+                    .filterIsInstance<TextPart>()
+                    .joinToString { part -> part.text }
+                val artifactName = event.artifact.name ?: "unnamed"
+                println("📥 レスポンス (ArtifactEvent - $artifactName): $artifactText")
+
+                if (event.lastChunk == true) {
+                    println("✅ Artifact completed")
+                }
+            }
         }
     }
     println()
